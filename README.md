@@ -1,2 +1,2 @@
 # DS
-DS homework
+This is DS homework.
