@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+using namespace std;
+
+typedef int ElementType;
+typedef struct Node *PtrToNode; 
+struct Node {
+	ElementType Data;
+	PtrToNode   Next;
+};
+typedef PtrToNode List;
+int number = 0;
+List Read(); /* 细节在此不表 */
+void Print(List L); /* 细节在此不表；空链表将输出NULL */
+
+List Merge(List L1, List L2);
+
+int main()
+{
+	List L1, L2, L;
+	L1 = Read();
+	L2 = Read();
+	L = Merge(L1, L2);
+	Print(L);
+	Print(L1);
+	Print(L2);
+	return 0;
+}
+
+/* 你的代码将被嵌在这里 */
+
+List Read()
+{	
+	cin >> number;
+	List head; List last;
+	head = (List)malloc(sizeof(struct Node));
+	head->Next = NULL;
+	last = head;
+	int i;//for
+	int temp;//temp
+	List node;
+	for (i = 0; i < number; i++) {
+		node = (List)malloc(sizeof(struct Node));
+		cin >> node->Data;
+		node->Next = NULL;
+		last->Next = node;
+		last = node;
+
+	}
+	return head;
+}
+
+void Print(List L)
+{
+	if (L->Next == NULL) // 头指针为空  
+	{
+		cout<<"NULL\n"; //输出NULL  
+		return;
+	}
+	L = L->Next;
+	while (L != NULL) // L不是空就输出 如果写成L->NULL != NULL就成 下一个不为NULL 少输出  
+	{
+		cout<< L->Data<<" ";
+		L = L->Next;
+	}
+	
+}
+
+List Merge(List L1, List L2)
+{
+	List head,last;
+	head = (List)malloc(sizeof(struct Node));
+	head->Next = NULL;
+	last = head;
+	List L3, L4;
+	L3 = L1->Next; L4 = L2->Next;
+	while (L3!=NULL&&L4 != NULL)
+	{
+		if (L3->Data > L4->Data) {
+			last->Next = L4;
+			last = last->Next;
+			L4 = L4->Next;
+		}
+		else {
+			last->Next = L3;
+			last = last->Next;
+			L3 = L3->Next;
+		}
+	}
+	last->Next = NULL;
+	if (L3 != NULL)
+	{
+		last->Next = L3;
+	}
+	if (L4 != NULL)
+	{
+		last->Next = L4;
+	}
+	L1->Next = NULL;
+	L2->Next = NULL;
+	return head;
+}
