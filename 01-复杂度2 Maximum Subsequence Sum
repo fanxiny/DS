@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+int main() {
+	int thissum = 0; int maxsum = 0;
+	int number = 0; int first = 0; int last = 0; int firsttemp = 0; int lasttemp = 0;
+	int flag = 0; int prime = 0;
+	cin >> number;
+	int *save = new int[number];
+	for (int i = 0; i < number; i++) {
+		cin >> save[i];
+	}
+	//计算子列和
+	for (int i = 0; i < number; i++) {
+		thissum += save[i];
+		
+		if (flag == 0) {
+			first = i;
+			
+			flag = 1;
+		}
+		if (thissum < 0) { 
+			thissum = 0;
+			first = 0;
+			last = 0;
+			flag = 0;
+		}
+		else { last=i; }
+		
+		if (thissum > maxsum) {
+			if (flag == 1) { firsttemp = first; flag = 2; }
+			maxsum = thissum; 
+			
+			lasttemp = last;
+		}
+
+	}
+
+
+	for (int i = 0; i < number; i++) {
+		if (save[i] == 0)prime = 1;
+	}
+
+	if(maxsum==0){ 
+		if(prime ==1){ cout << maxsum << " " << 0 << " " <<0; }
+		else cout << maxsum << " " << save[0] << " " << save[number-1]; 
+	}
+	else cout << maxsum<<" "<<save[firsttemp]<<" "<<save[lasttemp];
+	
+	delete[]save;//释放内存
+	return 0;
+}
+//P并列和对应相同i但是不同j，即尾是0
+//P1个正数
+//负数和0
+//P最大和前面有一段是0
