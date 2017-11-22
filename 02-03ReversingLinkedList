@@ -1,0 +1,71 @@
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+void print(int first);
+//define
+struct node {
+	int data;
+	int next;
+}node[100000];
+int list[100000];
+
+
+int main() {
+	int FirstAddress, n, k;
+	cin >> FirstAddress >> n >> k;
+	int address, Data, Next;
+	//input
+	for (int i = 0; i < n; i++) {
+		cin >> address >> Data >> Next;
+
+		node[address].data = Data;
+		node[address].next = Next;
+	}
+	int count = 0;
+	//顺序排列链表指向地址
+	int p = FirstAddress;
+	while (p != -1) {
+		list[count++] = p;
+		p = node[p].next;
+	}
+	//reverse
+	for (int i = 0; i + k < n + 1; i = i + k) {
+		if (i == 0) { FirstAddress = list[k - 1]; }
+		node[list[i]].next = list[i + k];
+		if (i != 0) { node[list[i - k]].next = list[i + k - 1]; }
+		for (int j = 0; j < k - 1; j++) {
+			node[list[i + k - j - 1]].next = list[i + k - j - 2];
+		}
+		if (count%k == 0)node[list[i]].next = -1;
+
+	}
+
+	//cout << node[list[0]].next <<endl;
+	print(FirstAddress);
+	return 0;
+}
+
+void print(int first)
+{
+	int p = first;
+	while (p != -1) {
+		if (node[p].next == -1) { printf("%05d %d %d\n", p, node[p].data, node[p].next); }
+		else printf("%05d %d %05d\n", p, node[p].data, node[p].next);
+		//cout << p << " " << node[p].data << " " <<node[p].next <<endl;
+		p = node[p].next;
+	}
+}
+/*
+
+有多余结点不在链表上	超时
+
+
+
+00100 5 4
+00000 4 -1
+00100 1 12309
+33218 3 00000
+12309 2 33218
+33322 5 21345
+代码
+*/
