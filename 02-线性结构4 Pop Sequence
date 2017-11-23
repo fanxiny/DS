@@ -1,0 +1,53 @@
+#include <iostream>
+#include <stdio.h>
+#include <stack>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int m, n, k;
+int check(vector<int>a);
+int main() {
+	
+	cin >> m >>n >> k;//input
+	vector<int>a;
+	for (int i = 0; i < k; i++) {
+		for (int j = 0; j < n; j++) {//读入一行待检测数据
+			int number;
+			cin >> number;
+			a.push_back(number);
+		}
+	
+		if (check(a))
+			cout << "YES"<<endl;//注意换行，否则格式错误
+		else
+			cout << "NO"<<endl;
+		a.clear();
+	}
+
+
+	return 0;
+}
+int check(vector<int>a) {
+	int count = 0;
+	int number = 1;
+	int max = n;
+	stack<int>save;
+	save.push(0);
+	while(count<n){
+		while (save.top() < a[count]&&save.size()<(m+1)) {//将数据从1到第一个出栈元素压入栈中
+			save.push(number);
+			number++;
+		}
+		if (a[count++]==save.top()) {//将读到的元素出栈
+			save.pop();
+			
+		}//若下一个元素比这个小，则与栈顶比较；若较大，则把到其为止的元素也压入栈中然后比较
+		else 
+			return 0;
+
+	}
+
+	return 1;
+}
+//这道题考察了对栈的熟悉程度，要注意38行的限制条件
