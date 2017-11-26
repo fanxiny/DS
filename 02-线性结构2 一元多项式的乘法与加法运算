@@ -1,0 +1,179 @@
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+
+
+typedef struct PolyNode* Polynomial;
+
+struct PolyNode {
+	int zhishu;
+	int xishu;
+	Polynomial next;
+	};
+
+Polynomial read();//读入数据存入链表
+Polynomial sum(Polynomial p1, Polynomial p2);//计算多项式的和
+Polynomial mult(Polynomial p1, Polynomial p2);//计算多项式的积
+Polynomial ctrlc(Polynomial p1);//复制链表
+int print(Polynomial p1);//输出结果
+
+Polynomial read()
+{
+	int number;
+	cin >> number;
+	Polynomial head, last;
+	head = (Polynomial)malloc(sizeof(struct PolyNode));
+	head->next = NULL;//初始化表头
+	last = head;//表末即是表头
+	Polynomial temp;
+	for (int i = 0; i < number; i++) {//读入数据
+		temp = (Polynomial)malloc(sizeof(struct PolyNode));
+		temp->next = NULL;
+		cin >> temp->xishu;
+		cin >> temp->zhishu;
+		last->next = temp;
+		last = temp;
+
+	}
+	return head;
+}
+
+Polynomial sum(Polynomial p1, Polynomial p2)
+{	
+	Polynomial psum,last,t1,t2;
+	psum = (Polynomial)malloc(sizeof(struct PolyNode));
+	psum->next = NULL;
+	last = psum;
+	t1 = p1->next; t2 = p2->next;
+	while (t1!=NULL&&t2!=NULL)
+	{
+		Polynomial temp = (Polynomial)malloc(sizeof(struct PolyNode));
+		if (t1->zhishu > t2->zhishu) {
+			temp->zhishu = t1->zhishu;
+			temp->xishu = t1->xishu;
+			last->next = temp;
+			last = temp;
+			t1 = t1->next;
+		}
+		else if (t1->zhishu ==t2->zhishu) {
+			temp->zhishu =t1->zhishu;
+			temp->xishu =t1->xishu+t2->xishu;
+			if (temp->xishu != 0) {//排除系数为0的项
+				last->next = temp;
+				last = temp;
+			}
+			
+			t1 = t1->next;
+			t2 = t2->next;
+		}
+		else {
+			temp->zhishu = t2->zhishu;
+			temp->xishu = t2->xishu;
+			last->next = temp;
+			last = temp;
+			t2 = t2->next;
+		}
+	}
+	if (t1 != NULL) {
+		last->next = t1;
+	}
+	if (t2 != NULL) {
+		last->next = t2;
+	}
+	return psum;
+}
+
+Polynomial mult(Polynomial p1, Polynomial p2)//将p2每一项分别乘另一个多项式，再利用SUM函数相加
+{
+	Polynomial pmult, last;
+	pmult = (Polynomial)malloc(sizeof(struct PolyNode));
+	pmult->next = NULL;
+	last = pmult;
+	while (p2->next!=NULL) {
+		Polynomial psave, last2;
+		psave = (Polynomial)malloc(sizeof(struct PolyNode));
+		psave->next = NULL;
+		last2 = psave;
+		Polynomial pn = (Polynomial)malloc(sizeof(struct PolyNode));
+		pn = ctrlc(p1);//将p1复制到pn
+		/*
+		while (pn->next!=NULL) {
+			Polynomial temp = (Polynomial)malloc(sizeof(struct PolyNode));
+			temp->xishu = (pn->next->xishu)*(p2->next->xishu);
+			temp->zhishu = pn->next->zhishu+ p2->next->zhishu;
+			last2->next = temp;
+			last2 = temp;
+			
+			pn = pn->next;
+		}
+		*/
+		while (p1->next != NULL) {
+			Polynomial temp = (Polynomial)malloc(sizeof(struct PolyNode));
+			temp->xishu = (p1->next->xishu)*(p2->next->xishu);
+			temp->zhishu = p1->next->zhishu + p2->next->zhishu;
+			last2->next = temp;
+			last2 = temp;
+
+			p1 = p1->next;
+		}
+		pmult = sum(pmult,psave);
+		p2 = p2->next;
+	}
+	last->next = NULL;
+	return pmult;
+}
+
+Polynomial ctrlc(Polynomial p1)
+{	
+	Polynomial pn = (Polynomial)malloc(sizeof(struct PolyNode));
+	Polynomial last,t1;
+	pn->next = NULL;
+	last = pn;
+	t1 = p1->next;
+	while (t1 != NULL) {
+		Polynomial temp = (Polynomial)malloc(sizeof(struct PolyNode));
+		temp->xishu = t1->xishu;
+		temp->zhishu = t1->zhishu;
+		last->next = temp;
+		last = temp;
+		t1 = t1->next;
+		
+	}
+	last->next = NULL;
+	return pn;
+}
+
+int print(Polynomial p)
+{	
+	if (!p) {//空表输出0 0
+		cout << "0 0";
+	}
+	p = p->next;
+	cout << p->xishu << " " << p->zhishu;
+	p = p->next;
+	while (p!=NULL) {
+		cout <<" "<< p->xishu <<" "<< p->zhishu;
+		p = p->next;
+	}
+	return 0;
+}
+
+
+int main() {
+	Polynomial P1, P2, Psum, Pmult;
+	P1 = read();
+	P2 = read();
+	Pmult = mult(P1, P2);
+	print(Pmult);
+	
+	/*
+	Psum = sum(P1,P2);
+	print(Psum);
+	
+	
+	print(P2);
+
+	*/
+	return 0;
+}
